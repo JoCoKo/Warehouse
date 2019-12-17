@@ -41,6 +41,12 @@ public class Item {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+   public void addAmount(int amount) {
+        this.amount += amount;
+    }
+   public void subtractAmount(int amount) {
+        this.amount -= amount;
+    }
 
     public double getPrice() {
         return price;
