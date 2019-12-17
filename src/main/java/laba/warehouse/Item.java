@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 
 public class Item {
     @Id
-    public ObjectId _id;
+    private ObjectId _id;
     private String name;
     private int amount;
     private double price;
@@ -54,5 +54,15 @@ public class Item {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "_id=" + _id.toString() +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", price=" + price +
+                '}';
     }
 }
