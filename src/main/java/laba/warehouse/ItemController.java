@@ -19,25 +19,25 @@ public class ItemController {
         this.warehouseService = warehouseService;
     }
 
-    @RequestMapping(value = "/items", method = RequestMethod.GET)
+    @GetMapping("/items")
     public List<Item> getAllItems() {
         logger.info("---- got getAllItems request");
         return warehouseService.findAll();
     }
 
-    @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
+    @GetMapping("/item/{id}")
     public Item getItemById(@PathVariable("id") ObjectId id) {
         logger.info("---- got getItemById request");
         return warehouseService.findBy_id(id);
     }
 
-    @RequestMapping(value = "/item", method = RequestMethod.POST)
+    @PostMapping("/item")
     public Item createItem(@RequestBody Item item) {
         logger.info("---- got createItem request");
         return warehouseService.createItem(item);
     }
 
-    @RequestMapping(value = "/item", method = RequestMethod.PUT)
+    @PutMapping("/item")
     public Item changeAmount(@RequestBody Map<String, String> map) {
         logger.info("---- got changeAmount request");
         return warehouseService.changeAmount(map);
