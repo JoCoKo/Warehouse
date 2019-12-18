@@ -1,6 +1,8 @@
 package laba.warehouse;
 
 
+import laba.warehouse.exceptions.ForbiddenOperationException;
+import laba.warehouse.exceptions.NotFoundException;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
