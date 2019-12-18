@@ -21,11 +21,13 @@ public class ItemController {
 
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     public List<Item> getAllItems() {
+        logger.info("---- got getAllItems request");
         return warehouseService.findAll();
     }
 
     @RequestMapping(value = "/item/{id}", method = RequestMethod.GET)
     public Item getItemById(@PathVariable("id") ObjectId id) {
+        logger.info("---- got getItemById request");
         return warehouseService.findBy_id(id);
     }
 
@@ -37,6 +39,7 @@ public class ItemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.PUT)
     public Item changeAmount(@RequestBody Map<String, String> map) {
+        logger.info("---- got changeAmount request");
         return warehouseService.changeAmount(map);
     }
 }
