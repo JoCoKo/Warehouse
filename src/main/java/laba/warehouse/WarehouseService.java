@@ -1,12 +1,12 @@
 package laba.warehouse;
 
+
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class WarehouseService {
@@ -36,14 +36,26 @@ public class WarehouseService {
         return item;
     }
 
-    public Item changeAmount(Map<String, String> map) {
-        String id = map.get("id");
-        int amount = Integer.parseInt(map.get("amount"));
+    public Item changeAmount(ObjectId id, String am) {
+        if (!itemRepository.existsById(id.toString()))
+            throw new NotFoundException("No item with id" + id.toString());
+
+        int amount;
+
+        try {
+            amount = Integer.parseInt(am);
+        }
+        catch (NumberFormatException e){
+            logger.error("----- Got Incorrect amount exception");
+            throw new ForbiddenOperationException("Incorrect amount");
+        }
+
         if (Math.abs(amount) > 10000 || amount == 0) {
             logger.error("----- Got |amount|>10_000 exception");
             throw new ForbiddenOperationException("Amount for 1 operation should be in (0;10000)");
         }
-        Item item = itemRepository.findBy_id(new ObjectId(id));
+
+        Item item = itemRepository.findBy_id(id);
         item.setAmount(item.getAmount() + amount);
         logger.info("--- Change amount of item id={} on {}", id, amount);
         return itemRepository.save(item);

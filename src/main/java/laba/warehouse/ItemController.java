@@ -37,9 +37,9 @@ public class ItemController {
         return warehouseService.createItem(item);
     }
 
-    @PutMapping("/item")
-    public Item changeAmount(@RequestBody Map<String, String> map) {
+    @PutMapping("/item/{id}")
+    public Item changeAmount(@PathVariable("id") ObjectId id, @RequestBody String amount) {
         logger.info("---- got changeAmount request");
-        return warehouseService.changeAmount(map);
+        return warehouseService.changeAmount(id,amount);
     }
 }
