@@ -1,6 +1,7 @@
 package laba.warehouse;
 
 import laba.warehouse.exceptions.ForbiddenOperationException;
+import net.minidev.json.JSONObject;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,10 +75,18 @@ public class Item {
         this.price = price;
     }
 
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+        obj.put("id",_id.toString());
+        obj.put("name",name);
+        obj.put("price",price);
+        return obj;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
-                "_id=" + _id.toString() +
+                "_id=" + _id +
                 ", name='" + name + '\'' +
                 ", amount=" + amount +
                 ", price=" + price +
