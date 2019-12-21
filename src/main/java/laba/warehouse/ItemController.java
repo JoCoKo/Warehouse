@@ -1,12 +1,12 @@
 package laba.warehouse;
 
+import net.minidev.json.JSONObject;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -38,8 +38,8 @@ public class ItemController {
     }
 
     @PutMapping("/item/{id}")
-    public Item changeAmount(@PathVariable("id") ObjectId id, @RequestBody String amount) {
-        logger.info("---- got changeAmount request");
-        return warehouseService.changeAmount(id,amount);
+    public Item reserveItems(@PathVariable("id") ObjectId id, @RequestBody JSONObject json) {
+        logger.info("---- got reserveItems request");
+        return warehouseService.reserveItems(id,json);
     }
 }
