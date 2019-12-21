@@ -35,7 +35,7 @@ public class WarehouseService {
 
     public Item findBy_id(ObjectId id) {
         logger.info("--- Get item by id {}", id.toString());
-        if (itemRepository.existsBy_id(id))
+        if (!itemRepository.existsBy_id(id))
             throw new NotFoundException("No item with id" + id.toString());
         return itemRepository.findBy_id(id);
     }
@@ -47,7 +47,7 @@ public class WarehouseService {
     }
 
     public Item changeAmount(ObjectId id, int amount) {
-        if (itemRepository.existsBy_id(id))
+        if (!itemRepository.existsBy_id(id))
             throw new NotFoundException("No item with id" + id.toString());
 
         Item item = itemRepository.findBy_id(id);
