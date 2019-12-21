@@ -46,9 +46,23 @@ public class WarehouseService {
         return item;
     }
 
-    public Item changeAmount(ObjectId id, int amount) {
+    public Item changeAmount(ObjectId id, String strAmount) {
         if (!itemRepository.existsBy_id(id))
             throw new NotFoundException("No item with id" + id.toString());
+        int amount;
+
+        try {
+            amount = Integer.parseInt(strAmount);
+        }
+        catch (NumberFormatException e){
+            logger.error("----- Got Incorrect amount exception");
+            throw new ForbiddenOperationException("Incorrect amount passed");
+        }
+
+        if ( Math.abs(amount) > 10000 || amount == 0) {
+            logger.error("----- Got amount>10_000 or <=0 exception");
+            throw new ForbiddenOperationException("Amount for 1 operation should be in (0;10000)");
+        }
 
         Item item = itemRepository.findBy_id(id);
         item.setAmount(item.getAmount() - amount);
@@ -78,7 +92,6 @@ public class WarehouseService {
             throw new ForbiddenOperationException("Blank params");
         }
         try {
-            amount = Integer.parseInt(strAmount);
             OrderID= Integer.parseInt(strOrderID);
         }
         catch (NumberFormatException e){
@@ -86,16 +99,11 @@ public class WarehouseService {
             throw new ForbiddenOperationException("Incorrect number passed");
         }
 
-        if (amount > 10000 || amount <= 0) {
-            logger.error("----- Got amount>10_000 or <=0 exception");
-            throw new ForbiddenOperationException("Amount for 1 operation should be in (0;10000)");
-        }
-
-        Item item = changeAmount(id,amount);
+        Item item = changeAmount(id,strAmount);
 
         jsonObject.remove("amount");
         JSONObject j = item.toJson();
-        j.put("amount", amount);
+        j.put("amount", strAmount);
         jsonObject.put("Item",j);
 
 
@@ -109,8 +117,8 @@ public class WarehouseService {
     private void cancelReservation(JSONObject jsonObject) {
         logger.info("----> Got message from rabbit {} ", jsonObject);
         String id = jsonObject.getAsString("id");
-        int amount = jsonObject.getAsNumber("amount").intValue();
-        changeAmount(new ObjectId(id),amount*-1);
+        String amount = jsonObject.getAsString("amount");
+        changeAmount(new ObjectId(id),amount);
     }
 
 }

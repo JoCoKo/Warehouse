@@ -37,9 +37,15 @@ public class ItemController {
         return warehouseService.createItem(item);
     }
 
-    @PutMapping("/item/{id}")
+    @PostMapping("/item/{id}")
     public Item reserveItems(@PathVariable("id") ObjectId id, @RequestBody JSONObject json) {
         logger.info("---- got reserveItems request");
         return warehouseService.reserveItems(id,json);
+    }
+
+    @PutMapping("/item/{id}")
+    public Item addItems(@PathVariable("id") ObjectId id, @RequestBody String amount) {
+        logger.info("---- got reserveItems request");
+        return warehouseService.changeAmount(id,"-"+amount);
     }
 }
