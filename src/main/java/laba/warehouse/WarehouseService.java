@@ -29,6 +29,7 @@ public class WarehouseService {
     }
 
     public List<Item> findAll() {
+        //test();
         logger.info("--- Get all items");
         return itemRepository.findAll();
     }
@@ -53,13 +54,12 @@ public class WarehouseService {
 
         try {
             amount = Integer.parseInt(strAmount);
-        }
-        catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             logger.error("----- Got Incorrect amount exception");
             throw new ForbiddenOperationException("Incorrect amount passed");
         }
 
-        if ( Math.abs(amount) > 10000 || amount == 0) {
+        if (Math.abs(amount) > 10000 || amount == 0) {
             logger.error("----- Got amount>10_000 or <=0 exception");
             throw new ForbiddenOperationException("Amount for 1 operation should be in (0;10000)");
         }
@@ -74,43 +74,39 @@ public class WarehouseService {
     public Item reserveItems(ObjectId id, JSONObject jsonObject) {
         String username;
         String strAmount;
-        String strOrderID;
-        int amount;
-        int OrderID;
 
-        if(jsonObject.containsKey("amount") && jsonObject.containsKey("orderID") && jsonObject.containsKey("username")){
-            strAmount=jsonObject.getAsString("amount");
-            strOrderID=jsonObject.getAsString("orderID");
-            username=jsonObject.getAsString("username");
-        }
-        else {
+        if (jsonObject.containsKey("amount") && jsonObject.containsKey("username")) {
+            strAmount = jsonObject.getAsString("amount");
+            username = jsonObject.getAsString("username");
+        } else {
             logger.error("----- Not all expected parameters passed");
             throw new ForbiddenOperationException("Invalid params");
         }
-        if(strAmount.isBlank() || strOrderID.isBlank() || username.isBlank()){
+        if (strAmount.isBlank() || username.isBlank()) {
             logger.error("----- Some required parameters passed are blank");
             throw new ForbiddenOperationException("Blank params");
         }
-        try {
-            OrderID= Integer.parseInt(strOrderID);
-        }
-        catch (NumberFormatException e){
-            logger.error("----- Got Incorrect number exception");
-            throw new ForbiddenOperationException("Incorrect number passed");
-        }
 
-        Item item = changeAmount(id,strAmount);
+        Item item = changeAmount(id, strAmount);
 
         jsonObject.remove("amount");
         JSONObject j = item.toJson();
         j.put("amount", strAmount);
-        jsonObject.put("Item",j);
+        jsonObject.put("Item", j);
 
 
         logger.trace("****************************** Current JSON {} ", jsonObject);
-        rabbitMQTemplate.convertAndSend(RabbitConstants.WAREHOUSE_EXCHANGE_RESERVE_ITEMS,"", jsonObject.toString());
+        rabbitMQTemplate.convertAndSend(RabbitConstants.WAREHOUSE_EXCHANGE_RESERVE_ITEMS, "", jsonObject.toString());
         logger.info("----> Send message to rabbit {} ", jsonObject.toString());
         return item;
+    }
+
+    public void test() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", "5df7bff906f34a21d47e4ba9");
+        jsonObject.put("amount", "1");
+        logger.info("----> Send message to RABBIT {} ", jsonObject);
+        rabbitMQTemplate.convertAndSend(RabbitConstants.TEST_EXCHANGE, "", jsonObject);
     }
 
     @RabbitListener(queues = RabbitConstants.WAREHOUSE_QUEUE_RESERVE_ITEM_CANCELED)
@@ -118,7 +114,7 @@ public class WarehouseService {
         logger.info("----> Got message from rabbit {} ", jsonObject);
         String id = jsonObject.getAsString("id");
         String amount = jsonObject.getAsString("amount");
-        changeAmount(new ObjectId(id),amount);
+        changeAmount(new ObjectId(id), amount);
     }
 
 }

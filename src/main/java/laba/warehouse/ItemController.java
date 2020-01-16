@@ -45,7 +45,7 @@ public class ItemController {
 
     @PutMapping("/item/{id}")
     public Item addItems(@PathVariable("id") ObjectId id, @RequestBody String amount) {
-        logger.info("---- got reserveItems request");
+        logger.info("---- got addItems request");
         return warehouseService.changeAmount(id,"-"+amount);
     }
 }
