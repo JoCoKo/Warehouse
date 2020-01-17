@@ -114,7 +114,7 @@ public class WarehouseService {
         logger.info("----> Got message from rabbit {} ", jsonObject);
         String id = jsonObject.getAsString("id");
         String amount = jsonObject.getAsString("amount");
-        changeAmount(new ObjectId(id), amount);
+        changeAmount(new ObjectId(id), "-"+amount);
     }
 
 }
